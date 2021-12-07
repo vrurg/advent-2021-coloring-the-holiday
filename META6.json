@@ -1,0 +1,31 @@
+{
+    "name": "Runner::UI",
+    "description": "Task Runner Demo",
+    "version": "0.0.1",
+    "authors": [
+        "Vadim Belman"
+    ],
+    "auth": "<zef:vrurg>",
+    "depends": [
+        "Cro::HTTP",
+        "File::Directory::Tree",
+        "AttrX::Mooish",
+        "Terminal::UI:ver<0.1.1+>:auth<cpan:bduggan>",
+        "Terminal::ANSIParser:auth<zef:japhb>",
+        "Terminal::ANSI:auth<cpan:bduggan>:ver<0.0.24+>",
+        "Terminal::Print",
+        "Concurrent::Queue"
+    ],
+    "build-depends": [],
+    "test-depends": [
+        "Test::Async:auth<zef:vrurg>"
+    ],
+    "provides": {
+        "Runner":     "lib/Runner.rakumod",
+        "Runner::UI": "lib/Runner/UI.rakumod"
+    },
+    "resources": [],
+    "license": "Artistic-2.0",
+    "source-url": "no yet",
+    "raku": "6.*"
+}

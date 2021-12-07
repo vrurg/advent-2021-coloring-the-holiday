@@ -1,0 +1,31 @@
+{
+  "meta-version": "0",
+  "support": {
+    "source": "Write me!"
+  },
+  "raku": null,
+  "test-depends": [
+  ],
+  "depends": [
+    "Cro::HTTP"
+  ],
+  "provides": {
+    "Routes": "lib/Routes.pm6"
+  },
+  "resources": [
+  ],
+  "name": "foo",
+  "tags": [
+    ""
+  ],
+  "license": "Write me!",
+  "auth": "Write me!",
+  "version": "0.0.1",
+  "build-depends": [
+  ],
+  "description": "Write me!",
+  "authors": [
+    ""
+  ],
+  "source-url": "Write me!"
+}
