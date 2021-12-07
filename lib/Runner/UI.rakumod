@@ -721,13 +721,13 @@ role ProcHandler does Terminalish {
                     when "stop-process" {
                         $proc.kill;
                         whenever Promise.in(15) {
-                            $comm.error: "=== Server ignores SIGHUP, trying SIGINT";
+                            $comm.error: "=== The process ignores SIGHUP, trying SIGINT";
                             $proc.kill(SIGINT);
                             whenever Promise.in(15) {
-                                $comm.error: "=== Server ignores SIGINT, trying SIGKILL";
+                                $comm.error: "=== The process ignores SIGINT, trying SIGKILL";
                                 $proc.kill(SIGKILL);
                                 whenever Promise.in(5) {
-                                    $comm.error: "=== Server ignores everything. I wash my hands...";
+                                    $comm.error: "=== The process ignores everything. I wash my hands...";
                                     done;
                                 }
                             }
