@@ -12,3 +12,7 @@
 - `Esc` to fully redraw the screen
 - `Space` inserts a '>>> CUT <<<' mark to easily see output "before" and "after" some moment in time
 - `c` clears the current pane
+
+# A Quick Look
+
+![Demo Screen](https://raw.githubusercontent.com/vrurg/advent-2021-coloring-the-holiday/main/img/ScreenRecording.gif)
