@@ -145,7 +145,7 @@ my class Style {
         +| $diff-attrs
     }
 
-    method overly(::?CLASS:D $mod, Int:D $mask) {
+    method overlay(::?CLASS:D $mod, Int:D $mask) {
         my $st-mask = $mask +& ST-MASK;
         self.new:
             fg => ($mask +& PROP-FG ?? $mod.fg !! $!fg),
@@ -173,9 +173,9 @@ my role Terminalish {
     my monitor BufLine {
         my atomicint $nextid = 0;
         has $.id = $nextid⚛++;
-        has @.style;
-        has @.overly; # Would override values in @.csi if element is defined
         has @.chr;
+        has @.style;
+        has @.overlay; # Would override values in @.csi if element is defined
         has $.pos = 0; # Where the next char will output
         has $.shift = 0;
         has Style:D $.default-style is required; # Default CSI
@@ -198,7 +198,7 @@ my role Terminalish {
         method clear {
             @!chr = ();
             @!style = ();
-            @!overly = ();
+            @!overlay = ();
             $!pos = 0;
         }
 
@@ -206,14 +206,14 @@ my role Terminalish {
             return if $pos < 0 || $pos >= +@!chr;
             @!chr.splice($pos, $count);
             @!style.splice(($pos > +@!style ?? +@!style !! $pos), $count);
-            @!overly = ();
+            @!overlay = ();
         }
 
         method insert(UInt:D :$at = $!pos, |c) {
             temp $!pos = $at;
             my $tail-chrs := @!chr.splice($at, *);
             my $tail-style := $at > @!style ?? Empty !! @!style.splice($at, *);
-            @!overly = ();
+            @!overlay = ();
             my $p = self.put: |c;
             @!chr.append: $tail-chrs;
             @!style.append: $tail-style;
@@ -248,12 +248,12 @@ my role Terminalish {
             return ([$default-style => ""],).Seq unless +@!chr > $shift;
 
             with ($matcher // $!matcher) {
-                @!overly = Style xx @!chr.elems;
+                @!overlay = Style xx @!chr.elems;
                 my $res = .match: my $s = @.chr.join;
                 if $res {
                     for $res.list -> $m {
                         my $chars = $m.chars;
-                        @!overly.splice($m.from, $chars, $!match-style xx $chars);
+                        @!overlay.splice($m.from, $chars, $!match-style xx $chars);
                     }
                 }
             }
@@ -267,7 +267,7 @@ my role Terminalish {
                 my $str;
                 while $pos < $chars {
                     my $cur-style = @!style[$pos] // $default-style;
-                    $cur-style = $cur-style.overly($_, PROP-MASK +| ST-MASK) with @!overly[$pos];
+                    $cur-style = $cur-style.overlay($_, PROP-MASK +| ST-MASK) with @!overlay[$pos];
                     my $pos-shift = $pos - $shift;
                     if $pos-shift > 0 && ( $pos-shift % $width ) == 0 {
                         $line.append: $style => "", $_<> with $str;
@@ -1051,9 +1051,6 @@ method events {
                 when "q" | "Q" {
                     emit "shutdown"
                 }
-                when "b" | "B" {
-                    emit "rebuild"
-                }
                 when "r" | "R" {
                     emit "restart"
                 }
@@ -1062,7 +1059,7 @@ method events {
                     $.ui.focused.print: "";
                 }
                 when " " {
-                    $.ui.focused.say: ansi.magenta, ">>> CUT <<<";
+                    $.ui.focused.say: ansi.magenta, ">>> CUT <<<", ansi.normal-video;
                 }
                 when "\t" {
                     my $frame = $.ui.focused-frame;
